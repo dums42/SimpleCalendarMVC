@@ -1,0 +1,75 @@
+﻿@model SimpleCalendarMVC.ViewModel.CalendarViewModel
+<br />
+<p class="lead">@ViewBag.Message</p>
+<br />
+<div class="card">
+    <div class="card-header">
+        <h5>@ViewBag.CardHeader</h5>
+    </div>
+    <div class="card-body">
+        <h6>Choose your month ...</h6>
+        <br />
+        <div>
+            <ul class="list-inline">
+                @foreach (var month in @Model.MonthList)
+                {
+
+
+                <li class="list-inline-item">
+                    @if (@month.IsSelected)
+                    {
+                        @Html.ActionLink(@month.Name, "Calendar", "Home", new { @id = @month.Id }, new { @class = "btn btn-secondary" })
+                    }
+                    else
+                    {
+                        @Html.ActionLink(@month.Name, "Calendar", "Home", new { @id = @month.Id }, new { @class = "btn btn-outline-secondary" })
+                    }
+
+                </li>
+                }
+            </ul>
+        </div>
+        <br />
+        <br />
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="list-group">
+                            @foreach (var appointment in @Model.AppointmentsToList)
+                            {
+                            <div>
+                                @Html.LabelFor(m => appointment.Date)
+                                @Html.ActionLink(@appointment.Title, "Appointment", "Home", new { @id = @appointment.Id }, null)
+
+                            </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card">
+                        <div class="container">
+                            <div class=" row">
+                                <div class="col-3">
+                                    @Html.LabelFor(m => m.AppointmentToShow.Title)<br />
+                                    @Html.LabelFor(m => m.AppointmentToShow.Description)<br />
+                                    @Html.LabelFor(m => m.AppointmentToShow.Date)<br />
+                                </div>
+
+                                <div class="col-9">
+                                    @if(Model.AppointmentToShow != null){
+                                        @Html.Label(Model.AppointmentToShow.Title)<br />
+                                        @Html.Label(Model.AppointmentToShow.Description)<br />
+                                        @Html.Label(Model.AppointmentToShow.Date.ToString("dd/MM/yyyy hh:mm:ss tt"))<br />
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
