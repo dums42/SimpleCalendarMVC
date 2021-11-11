@@ -8,24 +8,32 @@ using System.Web;
 namespace SimpleCalendarMVC.Services
 {
     /// <summary>
-    /// 
+    /// A implementation for the IDataService interface
+    /// which manages the data with EntityFramework
     /// </summary>
     public class EFDataService : IDataService
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public List<Appointment> GetAppointmentList()
+        public Appointment GetAppointmentById(int pId)
         {
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public List<Month> GetMonthList()
+        public List<Appointment> GetAppointmentListByMonthIndex(int pMonthIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Appointment> GetAppointments()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Month GetMonthByIndex(int pIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Month> GetMonths()
         {
             throw new NotImplementedException();
         }

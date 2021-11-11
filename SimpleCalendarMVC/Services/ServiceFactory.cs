@@ -6,13 +6,10 @@ using System.Web;
 namespace SimpleCalendarMVC.Services
 {
     /// <summary>
-    /// 
+    /// A static class that creates and returns specific instances of IDataService
     /// </summary>
-    public static class ServiceProvider
+    public static class ServiceFactory
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public enum SERVICE_TYPE
         {
             SIMPLE,
@@ -20,11 +17,11 @@ namespace SimpleCalendarMVC.Services
         }
 
         /// <summary>
-        /// 
+        /// Creates and returns specific instances of IDataService
         /// </summary>
         /// <param name="pServiceType"></param>
-        /// <returns></returns>
-        public static IDataService GetDataService(SERVICE_TYPE pServiceType) 
+        /// <returns>An instance of IDataService by the given type</returns>
+        public static IDataService GetDataServiceInstance(SERVICE_TYPE pServiceType) 
         {
             switch (pServiceType)
             {

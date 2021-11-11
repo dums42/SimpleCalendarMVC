@@ -132,7 +132,7 @@
     </Compile>
     <Compile Include="Services\EFDataService.cs" />
     <Compile Include="Services\IDataService.cs" />
-    <Compile Include="Services\ServiceProvider.cs" />
+    <Compile Include="Services\ServiceFactory.cs" />
     <Compile Include="Services\SimpleDataService.cs" />
     <Compile Include="ViewModel\CalendarViewModel.cs" />
   </ItemGroup>

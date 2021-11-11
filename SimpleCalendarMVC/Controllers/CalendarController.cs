@@ -4,12 +4,12 @@ using SimpleCalendarMVC.ViewModel;
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using static SimpleCalendarMVC.Services.ServiceProvider;
+using static SimpleCalendarMVC.Services.ServiceFactory;
 
 namespace SimpleCalendarMVC.Controllers
 {
     /// <summary>
-    /// 
+    /// The controller that contains the logic and functions of the calendar page
     /// </summary>
     public class CalendarController : Controller
     {
@@ -22,58 +22,24 @@ namespace SimpleCalendarMVC.Controllers
 
         private CalendarViewModel calendarViewModel = null;
 
-        #region ctor & initializatrions
+        #region ctor
 
         /// <summary>
-        /// 
+        /// The constructor of the controller
         /// </summary>
         public CalendarController()
         {
             calendarViewModel = new CalendarViewModel();
-
-            InitializeData();
-
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private void InitializeData() {
-
-            IDataService service = GetDataService(SERVICE_TYPE.SIMPLE);
-
-            if (service != null) {
-                calendarViewModel.MonthList = service.GetMonthList();
-                calendarViewModel.AppointmentList = service.GetAppointmentList();
-
-                foreach (var appointment in calendarViewModel.AppointmentList)
-                {
-
-                    foreach (var month in calendarViewModel.MonthList)
-                    {
-                        if (month.Id.Equals(appointment.Date.Month))
-                        {
-
-                            //setting relation between month and appointment
-                            month.Appointments.Add(appointment);
-                            appointment.Month = month;
-
-                            break;
-                        }
-                    }
-                }
-            }
-            
         }
 
         #endregion
 
-        #region ActionResults
+        #region Actions
 
         /// <summary>
-        /// 
+        /// The action that the "index view" returns
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The Index-View</returns>
         public ActionResult Index()
         {
             ViewBag.AppName = Properties.Resources.AppName;
@@ -84,7 +50,7 @@ namespace SimpleCalendarMVC.Controllers
         }
 
         /// <summary>
-        /// 
+        /// The action that the "about view" returns
         /// </summary>
         /// <returns></returns>
         public ActionResult About()
@@ -97,7 +63,7 @@ namespace SimpleCalendarMVC.Controllers
         }
 
         /// <summary>
-        /// 
+        /// The action that the "contact view" returns
         /// </summary>
         /// <returns></returns>
         public ActionResult Contact()
@@ -110,7 +76,7 @@ namespace SimpleCalendarMVC.Controllers
         }
 
         /// <summary>
-        /// 
+        /// The action that the "calendar view" returns
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -118,7 +84,20 @@ namespace SimpleCalendarMVC.Controllers
         {
             try
             {
-                CalculateCalendarPageContet(id, null);
+                ViewBag.AppName     = Properties.Resources.AppName;
+                ViewBag.Title       = Properties.Resources.CalendarPageTitle;
+                ViewBag.CardHeader  = Properties.Resources.CardHeader;
+                ViewBag.Message     = Properties.Resources.CalendarPageParagraph;
+
+
+                //I decided to fetch the complete data here. Should these become too large, a strategy for partial fetching on user actions should be chosen
+                FetchCalendarData();
+
+                if (id.HasValue)
+                {
+                    CalculateCalendarPageContetByMonthIndex(id.Value);
+                }
+
                 return View(VIEW_NAME_CALENDAR, calendarViewModel);
             }
             catch (Exception ex)
@@ -133,7 +112,7 @@ namespace SimpleCalendarMVC.Controllers
         }
 
         /// <summary>
-        /// 
+        /// The action that the "calendar view" returns
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -141,7 +120,19 @@ namespace SimpleCalendarMVC.Controllers
         {
             try
             {
-                CalculateCalendarPageContet(null, id);
+                ViewBag.AppName     = Properties.Resources.AppName;
+                ViewBag.Title       = Properties.Resources.CalendarPageTitle;
+                ViewBag.CardHeader  = Properties.Resources.CardHeader;
+                ViewBag.Message     = Properties.Resources.CalendarPageParagraph;
+
+                //I decided to fetch the complete data here. Should these become too large, a strategy for partial fetching on user actions should be chosen
+                FetchCalendarData();
+
+                if (id.HasValue) 
+                { 
+                    CalculateCalendarPageContetByAppointmentId(id.Value);
+                }
+
                 return View(VIEW_NAME_CALENDAR, calendarViewModel);
             }
             catch (Exception ex)
@@ -152,58 +143,90 @@ namespace SimpleCalendarMVC.Controllers
 
                 return View(VIEW_NAME_ERROR);
             }
-            
         }
 
         #endregion
 
-        #region calculations
+        #region business functions
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="pMonthIndex"></param>
-        /// <param name="pAppointmentId"></param>
-        private void CalculateCalendarPageContet(int? pMonthIndex, int? pAppointmentId){
+        private void FetchCalendarData()
+        {
+
+            IDataService service = GetDataServiceInstance(SERVICE_TYPE.SIMPLE);
+
+            if (service != null)
+            {
+                calendarViewModel.MonthList = service.GetMonths();
+            }
+            else
+            {
+                throw new Exception($"Couldn't get calendar data!");
+            }
+
+        }
+
+        /// <summary>
+        /// This method determines the data that should be displayed in the view based on the month index
+        /// </summary>
+        /// <param name="pMonthIndex">The index of the month to be displayed</param>
+        private void CalculateCalendarPageContetByMonthIndex(int pMonthIndex){
 
             ViewBag.AppName     = Properties.Resources.AppName;
             ViewBag.Title       = Properties.Resources.CalendarPageTitle;
             ViewBag.CardHeader  = Properties.Resources.CardHeader;
             ViewBag.Message     = Properties.Resources.CalendarPageParagraph;
 
-            if (pAppointmentId != null) 
-            {
-                calendarViewModel.MonthList.ToList().ForEach(m => m.IsSelected = false);
+            calendarViewModel.MonthList.ToList().ForEach(m => m.IsSelected = false);
 
-                var appointment = calendarViewModel.AppointmentList.Where(a => a.Id.Equals(pAppointmentId)).FirstOrDefault();
+            var month = calendarViewModel.MonthList.Where(m => m.Index.Equals(pMonthIndex)).FirstOrDefault();
 
-                if (appointment != null)
-                {
-                    appointment.Month.IsSelected = true;
-                    calendarViewModel.AppointmentToShow = appointment;
-                    calendarViewModel.AppointmentsToList = appointment.Month.Appointments.OrderBy(a => a.Date).ToList();
-                }
-                else 
-                {
-                    throw new Exception($"Illegal appointment id => {pAppointmentId}!");
-                }
-
+            if (month != null) { 
+                month.IsSelected = true;
+                calendarViewModel.AppointmentsToList = month.Appointments.OrderBy(a => a.Date).ToList();
             }
-            else if (pMonthIndex != null)
+            else
             {
-                calendarViewModel.MonthList.ToList().ForEach(m => m.IsSelected = false);
-
-                var month = calendarViewModel.MonthList.Where(m => m.Index.Equals(pMonthIndex)).FirstOrDefault();
-
-                if (month != null) { 
-                    month.IsSelected = true;
-                    calendarViewModel.AppointmentsToList = month.Appointments.OrderBy(a => a.Date).ToList();
-                }
-                else
-                {
-                    throw new Exception($"Illegal month index => {pMonthIndex}!");
-                }
+                //if no month were found, something went wrong
+                throw new Exception($"Illegal month index => {pMonthIndex}!");
             }
+        }
+
+        /// <summary>
+        /// This method determines the data that should be displayed in the view based on the appontment id
+        /// </summary>
+        /// <param name="pAppointmentId">The id of the appointment to be displayed</param>
+        private void CalculateCalendarPageContetByAppointmentId(int pAppointmentId)
+        {
+
+            ViewBag.AppName     = Properties.Resources.AppName;
+            ViewBag.Title       = Properties.Resources.CalendarPageTitle;
+            ViewBag.CardHeader  = Properties.Resources.CardHeader;
+            ViewBag.Message     = Properties.Resources.CalendarPageParagraph;
+
+            calendarViewModel.MonthList.ToList().ForEach(m => m.IsSelected = false);
+
+            //selecting the appointment by id from the month list
+            var appointment = calendarViewModel.MonthList.SelectMany(m => m.Appointments).Where(a => a.Id.Equals(pAppointmentId)).FirstOrDefault();
+
+
+            //If the whole calendar data is larger, so that there are performance problems, you should consider fetching the data partially / as required
+            //var appointment2 = ServiceProvider.GetDataServiceInstance(SERVICE_TYPE.SIMPLE).GetAppointmentById(pAppointmentId);
+
+            if (appointment != null)
+            {
+                appointment.Month.IsSelected = true;
+                calendarViewModel.AppointmentToShow = appointment;
+                calendarViewModel.AppointmentsToList = appointment.Month.Appointments.OrderBy(a => a.Date).ToList();
+            }
+            else
+            {
+                //if no appointment were found, something went wrong
+                throw new Exception($"Illegal appointment id => {pAppointmentId}!");
+            }
+
         }
 
         #endregion

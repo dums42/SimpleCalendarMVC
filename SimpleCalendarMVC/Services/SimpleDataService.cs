@@ -1,50 +1,25 @@
 ﻿using SimpleCalendarMVC.Models;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
 
 namespace SimpleCalendarMVC.Services
 {
     /// <summary>
-    /// 
+    /// A simple implementation for the IDataService interface
+    /// It only contains hardcoded data
     /// </summary>
     public class SimpleDataService : IDataService
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public List<Appointment> GetAppointmentList()
+
+        private List<Appointment> appointments = null;
+
+        private List<Month> months = null;
+
+        public SimpleDataService()
         {
-            return new List<Appointment>()
-            {
-
-                new Appointment(){ Id = 1, Date = new DateTime(2021,1,20,14,15,0), Title = "Customer A", Description = "Video-Conference with customer A", Organizer = "Max Mustermann", Attendees = new List<Attendee>() { new Attendee() { Name = "John Smith" }, new Attendee() { Name = "Robert Turner" }, new Attendee() { Name = "Erika Gabler" } } },
-                new Appointment(){ Id = 2, Date = new DateTime(2021,1,15,9,30,0), Title = "Scrum Meeting", Description = "Scrum Meeting with the Scrum-Team ;)", Organizer = "Max Mustermann", Attendees = new List<Attendee>() { new Attendee() { Name = "John Smith" }, new Attendee() { Name = "Robert Turner" }, new Attendee() { Name = "Erika Gabler" } } },
-                new Appointment(){ Id = 3, Date = new DateTime(2021,2,16,12,0,0), Title = "Lunch with Joe", Description = "Lunch with Joe at Burger King ;)", Organizer = "Max Mustermann", Attendees = new List<Attendee>() { new Attendee() { Name = "Joe Mayer" } } },
-                new Appointment(){ Id = 5, Date = new DateTime(2021,2,8,16,00,0), Title = "Team Meeting", Description = "Scrum-Team Meeting", Organizer = "Max Mustermann", Attendees = new List<Attendee>() { new Attendee() { Name = "John Smith" }, new Attendee() { Name = "Robert Turner" }, new Attendee() { Name = "Erika Gabler" } } },
-                new Appointment(){ Id = 6, Date = new DateTime(2021,2,19,17,00,0), Title = "Project Meeting", Description = "Project Meeting", Organizer = "Max Mustermann", Attendees = new List<Attendee>() { new Attendee() { Name = "John Smith" }, new Attendee() { Name = "Robert Turner" }, new Attendee() { Name = "Erika Gabler" } } },
-                new Appointment(){ Id = 7, Date = new DateTime(2021,3,15,9,30,0), Title = "Appointment 03", Description = " My Appointment 03", Organizer = "Max Mustermann", Attendees = new List<Attendee>() { new Attendee() { Name = "John Smith" }, new Attendee() { Name = "Robert Turner" }, new Attendee() { Name = "Erika Gabler" } } },
-                new Appointment(){ Id = 8, Date = new DateTime(2021,5,15,9,30,0), Title = "Appointment 04", Description = " My Appointment 04", Organizer = "Max Mustermann", Attendees = new List<Attendee>() { new Attendee() { Name = "John Smith" }, new Attendee() { Name = "Robert Turner" }, new Attendee() { Name = "Erika Gabler" } } },
-                new Appointment(){ Id = 9, Date = new DateTime(2021,10,15,9,30,0), Title = "Appointment 05", Description = " My Appointment 05", Organizer = "Max Mustermann", Attendees = new List<Attendee>() { new Attendee() { Name = "John Smith" }, new Attendee() { Name = "Robert Turner" }, new Attendee() { Name = "Erika Gabler" } } },
-                new Appointment(){ Id = 10, Date = new DateTime(2021,12,15,9,30,0), Title = "Appointment 06", Description = " My Appointment 06", Organizer = "Max Mustermann", Attendees = new List<Attendee>() { new Attendee() { Name = "John Smith" }, new Attendee() { Name = "Robert Turner" }, new Attendee() { Name = "Erika Gabler" } } },
-                new Appointment(){ Id = 11, Date = new DateTime(2021,12,19,14,30,0), Title = "Appointment 07", Description = " My Appointment 07", Organizer = "Max Mustermann", Attendees = new List<Attendee>() { new Attendee() { Name = "John Smith" }, new Attendee() { Name = "Robert Turner" }, new Attendee() { Name = "Erika Gabler" } } }
-            };
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public List<Month> GetMonthList()
-        {
-
-            var months = Enumerable.Range(1, 12).Select(i => new { I = i, M = DateTimeFormatInfo.CurrentInfo.GetMonthName(i) });
-
-            return new List<Month>() {
+            //setup data
+            months = new List<Month>() {
                 new Month(1, 1, "Jan"),
                 new Month(2, 2, "Feb"),
                 new Month(3, 3, "Mar"),
@@ -58,6 +33,87 @@ namespace SimpleCalendarMVC.Services
                 new Month(11, 11, "Nov"),
                 new Month(12, 12, "Dec")
             };
+
+            appointments = new List<Appointment>()
+            {
+
+                new Appointment(){ Id = 1, Date = new DateTime(2021,1,20,14,15,0), Title = "Customer A", Description = "Video-Conference with customer A", Organizer = "Max Mustermann", Attendees = new List<Attendee>() { new Attendee() { Name = "John Smith" }, new Attendee() { Name = "Robert Turner" }, new Attendee() { Name = "Erika Gabler" } } },
+                new Appointment(){ Id = 2, Date = new DateTime(2021,1,15,9,30,0), Title = "Scrum Meeting", Description = "Scrum Meeting with the Scrum-Team ;)", Organizer = "Max Mustermann", Attendees = new List<Attendee>() { new Attendee() { Name = "John Smith" }, new Attendee() { Name = "Robert Turner" }, new Attendee() { Name = "Erika Gabler" } } },
+                new Appointment(){ Id = 3, Date = new DateTime(2021,2,16,12,0,0), Title = "Lunch with Joe", Description = "Lunch with Joe at Burger King ;)", Organizer = "Max Mustermann", Attendees = new List<Attendee>() { new Attendee() { Name = "Joe Mayer" } } },
+                new Appointment(){ Id = 5, Date = new DateTime(2021,2,8,16,00,0), Title = "Team Meeting", Description = "Scrum-Team Meeting", Organizer = "Max Mustermann", Attendees = new List<Attendee>() { new Attendee() { Name = "John Smith" }, new Attendee() { Name = "Robert Turner" }, new Attendee() { Name = "Erika Gabler" } } },
+                new Appointment(){ Id = 6, Date = new DateTime(2021,2,19,17,00,0), Title = "Project Meeting", Description = "Project Meeting", Organizer = "Max Mustermann", Attendees = new List<Attendee>() { new Attendee() { Name = "John Smith" }, new Attendee() { Name = "Robert Turner" }, new Attendee() { Name = "Erika Gabler" } } },
+                new Appointment(){ Id = 7, Date = new DateTime(2021,3,15,9,30,0), Title = "Appointment 03", Description = " My Appointment 03", Organizer = "Max Mustermann", Attendees = new List<Attendee>() { new Attendee() { Name = "John Smith" }, new Attendee() { Name = "Robert Turner" }, new Attendee() { Name = "Erika Gabler" } } },
+                new Appointment(){ Id = 8, Date = new DateTime(2021,5,15,9,30,0), Title = "Appointment 04", Description = " My Appointment 04", Organizer = "Max Mustermann", Attendees = new List<Attendee>() { new Attendee() { Name = "John Smith" }, new Attendee() { Name = "Robert Turner" }, new Attendee() { Name = "Erika Gabler" } } },
+                new Appointment(){ Id = 9, Date = new DateTime(2021,10,15,9,30,0), Title = "Appointment 05", Description = " My Appointment 05", Organizer = "Max Mustermann", Attendees = new List<Attendee>() { new Attendee() { Name = "John Smith" }, new Attendee() { Name = "Robert Turner" }, new Attendee() { Name = "Erika Gabler" } } },
+                new Appointment(){ Id = 10, Date = new DateTime(2021,12,15,9,30,0), Title = "Appointment 06", Description = " My Appointment 06", Organizer = "Max Mustermann", Attendees = new List<Attendee>() { new Attendee() { Name = "John Smith" }, new Attendee() { Name = "Robert Turner" }, new Attendee() { Name = "Erika Gabler" } } },
+                new Appointment(){ Id = 11, Date = new DateTime(2021,12,19,14,30,0), Title = "Appointment 07", Description = " My Appointment 07", Organizer = "Max Mustermann", Attendees = new List<Attendee>() { new Attendee() { Name = "John Smith" }, new Attendee() { Name = "Robert Turner" }, new Attendee() { Name = "Erika Gabler" } } }
+            };
+
+
+            foreach (var appointment in appointments)
+            {
+                foreach (var month in months)
+                {
+                    if (month.Id.Equals(appointment.Date.Month))
+                    {
+                        //setting relation between month and appointment
+                        month.Appointments.Add(appointment);
+                        appointment.Month = month;
+                        break;
+                    }
+                }
+            }
+
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public List<Appointment> GetAppointments()
+        {
+            return appointments;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pId"></param>
+        /// <returns></returns>
+        public Appointment GetAppointmentById(int pId)
+        {
+            return appointments.Where(a => a.Id.Equals(pId)).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pMonthIndex"></param>
+        /// <returns></returns>
+        public List<Appointment> GetAppointmentListByMonthIndex(int pMonthIndex)
+        {
+            return (List<Appointment>)months.FirstOrDefault(m => m.Index.Equals(pMonthIndex)).Appointments;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public List<Month> GetMonths()
+        {
+
+            return months;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pIndex"></param>
+        /// <returns></returns>
+        public Month GetMonthByIndex(int pIndex)
+        {
+            return months.FirstOrDefault(m => m.Index.Equals(pIndex));
+        }
+
+
     }
 }
