@@ -11,16 +11,16 @@
 <body>
         <div class="container">
             
-            <div class="navbar navbar-expand-lg navbar-light bg-light" ">
+            <div class="navbar navbar-expand-lg navbar-light bg-light">
 
                 <div class="container-fluid">
-                    <a class="navbar-brand" href="#">Simple Calendar</a>
+                    <label class="navbar-brand">@ViewBag.AppName</label>
                     <div class="collapse navbar-collapse float-right" id="navbarSupportedContent">
                         <ul class="nav navbar-nav">
-                            <li class="nav-link">@Html.ActionLink("Home", "Index", "Home")</li>
-                            <li class="nav-link">@Html.ActionLink("Calendar", "Calendar", "Home")</li>
-                            <li class="nav-link">@Html.ActionLink("Contact", "Contact", "Home")</li>
-                            <li class="nav-link">@Html.ActionLink("About", "About", "Home")</li>
+                            <li class="nav-link">@Html.ActionLink("Home", "Index", "Calendar")</li>
+                            <li class="nav-link">@Html.ActionLink("Calendar", "Calendar", "Calendar")</li>
+                            <li class="nav-link">@Html.ActionLink("Contact", "Contact", "Calendar")</li>
+                            <li class="nav-link">@Html.ActionLink("About", "About", "Calendar")</li>
                         </ul>
                     </div>
                 </div>

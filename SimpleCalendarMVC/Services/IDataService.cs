@@ -7,11 +7,21 @@ using System.Threading.Tasks;
 
 namespace SimpleCalendarMVC.Services
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IDataService
     {
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         List<Month> GetMonthList();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         List<Appointment> GetAppointmentList();
 
     }

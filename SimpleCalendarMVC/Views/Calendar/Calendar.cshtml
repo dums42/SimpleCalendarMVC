@@ -1,0 +1,78 @@
+﻿@model SimpleCalendarMVC.ViewModel.CalendarViewModel
+<br />
+<p class="lead">@ViewBag.Message</p>
+<br />
+<div class="card">
+    <div class="card-header">
+        <h5>@ViewBag.CardHeader</h5>
+    </div>
+    <div class="card-body">
+        <h6>Choose your month ...</h6>
+        <br />
+        <div>
+            <ul class="list-inline">
+                @foreach (var month in @Model.MonthList)
+                {
+                <li class="list-inline-item">
+                    @Html.ActionLink(@month.Name, "Calendar", "Calendar", new { @id = @month.Id }, new { @class = @month.IsSelected ? "btn btn-secondary" : "btn btn-outline-secondary" })
+                </li>
+                }
+            </ul>
+        </div>
+        <br />
+        <br />
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="list-group">
+                            @if (@Model.AppointmentsToList == null || @Model.AppointmentsToList.Count == 0)
+                            {
+                                @Html.Label("Currently no appointments this month, you can relax :)", new { @class = "list-group-item list-group-item-action" })
+                            }
+                            else
+                            {
+                                foreach (var appointment in @Model.AppointmentsToList)
+                                {
+                                    @Html.ActionLink(string.Format(new System.Globalization.CultureInfo("en-GB"), "{0:dd/MM/yyyy hh:mm tt} - {1}", @appointment.Date, @appointment.Title), "Appointment", "Calendar", new { @id = @appointment.Id }, new { @class = "list-group-item list-group-item-action" })
+                                }
+                            }
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class= @(Model.AppointmentToShow != null ? "card" : "d-none") >
+                        <div class="container">
+                            <div class=" row">
+                                <div class="col-3">
+                                    <b>@Html.LabelFor(m => m.AppointmentToShow.Description)</b><br />
+                                    <b>@Html.LabelFor(m => m.AppointmentToShow.Date)</b><br />
+                                    <b>@Html.LabelFor(m => m.AppointmentToShow.Organizer)</b><br />
+                                    <b>@Html.LabelFor(m => m.AppointmentToShow.Attendees)</b><br />
+                                </div>
+
+                                <div class="col-9">
+                                    @if (Model.AppointmentToShow != null)
+                                    {
+                                        @Html.Label(Model.AppointmentToShow.Description)<br />
+                                        @Html.Label(string.Format(new System.Globalization.CultureInfo("en-GB"), "{0:dd/MM/yyyy hh:mm tt}", Model.AppointmentToShow.Date))<br />
+                                        @Html.Label(Model.AppointmentToShow.Organizer)<br />
+                                        <ul>
+                                            @foreach (var attendee in @Model.AppointmentToShow.Attendees)
+                                            {
+                                                <li>@attendee.Name</li>
+                                            }
+                                        </ul>
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
